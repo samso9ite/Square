@@ -18,7 +18,7 @@ let access = await sessionStorage.getItem('access')
 //   config.headers['Access-Key'] = 'vwznw2mw.O7U8tx23y0vyC5eUClLNyYqaIAJ08P40';
   return config;
 });
-const baseUrl = 'http://hucaplms.king.name.ng/public/api/v1/'
+const baseUrl = 'http://127.0.0.1:8000/'
 export default { 
   axios_instance,
   baseUrl,

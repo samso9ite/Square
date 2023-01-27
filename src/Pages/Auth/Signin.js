@@ -1,7 +1,37 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import { useHistory } from "react-router-dom";
 import Api from "../../Api";
 
 const Signin = () => {
+    const [data, setDatas] = useState({})
+    const [success, setSuccess] = useState(false)
+    const history = useHistory()
+    const handleChange = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        setDatas(values => ({...values, [name]:value}))
+    };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log(data);
+        Api.axios_instance.post(Api.baseUrl+'auth/jwt/create/', data)
+        .then(res => {
+            // res.data
+            console.log(res.data);
+        })
+        .catch(error => {
+            // error.data
+            console.log(error);
+            // console.log(error.data);
+        })
+    }
+
+    useEffect(() => {
+        if(success === true){
+            history.push('/')
+        }
+    }, [history, success])
+
     return(
         <div className="login">
         <div className="container sm:px-10">
@@ -30,22 +60,24 @@ const Signin = () => {
                         Sign In
                     </h2>
                     <div className="intro-x mt-2 text-slate-400 xl:hidden text-center">A few more clicks to sign in to your account. We're ready to process your request.</div>
-                    <div className="intro-x mt-8">
-                        <input type="text" className="intro-x login__input form-control py-3 px-4 block" placeholder="Email" />
-                        <input type="password" className="intro-x login__input form-control py-3 px-4 block mt-4" placeholder="Password" />
-                    </div>
-                    <div className="intro-x flex text-slate-600 dark:text-slate-500 text-xs sm:text-sm mt-4">
-                        <div className="flex items-center mr-auto">
-                            <input id="remember-me" type="checkbox" className="form-check-input border mr-2" />
-                            <label className="cursor-pointer select-none" for="remember-me">Remember me</label>
+                    <form id="signinForm" onSubmit={handleSubmit}>
+                        <div className="intro-x mt-8">
+                            <input type="text" className="intro-x login__input form-control py-3 px-4 block" placeholder="Email" name="email" value={data.email || ''} onChange={handleChange} />
+                            <input type="password" className="intro-x login__input form-control py-3 px-4 block mt-4" placeholder="Password" name="password" value={data.password || ''} onChange={handleChange} />
                         </div>
-                        <a href="">Forgot Password?</a> 
-                    </div>
-                    <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
-                        <button className="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top">Login</button>
-                        <button className="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 xl:mt-0 align-top">Register</button>
-                    </div>
-                    <div className="intro-x mt-10 xl:mt-24 text-slate-600 dark:text-slate-500 text-center xl:text-left"> By signin up, you agree to our <a className="text-primary dark:text-slate-200" href="">Terms and Conditions</a> & <a className="text-primary dark:text-slate-200" href="">Privacy Policy</a> </div>
+                        <div className="intro-x flex text-slate-600 dark:text-slate-500 text-xs sm:text-sm mt-4">
+                            <div className="flex items-center mr-auto">
+                                <input id="remember-me" type="checkbox" className="form-check-input border mr-2" />
+                                <label className="cursor-pointer select-none" for="remember-me">Remember me</label>
+                            </div>
+                            <a href="">Forgot Password?</a> 
+                        </div>
+                        <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+                            <button className="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top" type="submit">Login</button>
+                            <button className="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 xl:mt-0 align-top">Register</button>
+                        </div>
+                    </form>
+                    <div className="intro-x mt-10 xl:mt-24 text-slate-600 dark:text-slate-500 text-center xl:text-left"> By signing up, you agree to our <a className="text-primary dark:text-slate-200" href="">Terms and Conditions</a> & <a className="text-primary dark:text-slate-200" href="">Privacy Policy</a> </div>
                 </div>
             </div>
             {/* <!-- END: Login Form --> */}

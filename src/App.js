@@ -2,12 +2,13 @@
 import './assets/css/app.css'
 import './assets/js/app.js'
 import $ from 'jquery';
-import {BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch, useParams } from 'react-router-dom';
 import Dashboard from './Pages/Dashboard';
 import Rates from './Pages/Rates';
 import Transactions from './Pages/TransactionHistory';
 import Register from './Pages/Auth/Signup';
 import Signin from './Pages/Auth/Signin';
+import Activate from './Pages/Auth/Activate';
 
 function App() {
   return (
@@ -36,6 +37,11 @@ function App() {
         <Switch>
           <Route path='/signin'>
             <Signin />
+          </Route>
+        </Switch>
+        <Switch>
+          <Route path='/activate/:uid/:token'>
+            <Activate />
           </Route>
         </Switch>
       </div>
