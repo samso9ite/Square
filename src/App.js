@@ -10,6 +10,7 @@ import Register from './Pages/Auth/Signup';
 import Signin from './Pages/Auth/Signin';
 import Activate from './Pages/Auth/Activate';
 
+
 function App() {
   return (
     <Router>

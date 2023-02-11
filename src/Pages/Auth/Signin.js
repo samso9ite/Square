@@ -1,10 +1,12 @@
 import React, {useEffect, useState} from "react";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Api from "../../Api";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Signin = () => {
     const [data, setDatas] = useState({})
-    const [success, setSuccess] = useState(false)
+    const [isSuccess, setIsSuccess ] = useState(false)
     const history = useHistory()
     const handleChange = (event) => {
         const name = event.target.name;
@@ -13,24 +15,30 @@ const Signin = () => {
     };
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(data);
         Api.axios_instance.post(Api.baseUrl+'auth/jwt/create/', data)
         .then(res => {
-            // res.data
-            console.log(res.data);
+            sessionStorage.setItem('access', res.data.access)
+            setIsSuccess(true)
         })
-        .catch(error => {
-            // error.data
-            console.log(error);
-            // console.log(error.data);
+        .catch(err => {
+            toast.error(err.response.data.detail, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                });
         })
     }
 
     useEffect(() => {
-        if(success === true){
+        if(isSuccess === true){
             history.push('/')
         }
-    }, [history, success])
+    })
 
     return(
         <div className="login">
@@ -74,7 +82,7 @@ const Signin = () => {
                         </div>
                         <div className="intro-x mt-5 xl:mt-8 text-center xl:text-left">
                             <button className="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top" type="submit">Login</button>
-                            <button className="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 xl:mt-0 align-top">Register</button>
+                          <Link to="/register">  <button className="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 mt-3 xl:mt-0 align-top">Register</button> </Link>
                         </div>
                     </form>
                     <div className="intro-x mt-10 xl:mt-24 text-slate-600 dark:text-slate-500 text-center xl:text-left"> By signing up, you agree to our <a className="text-primary dark:text-slate-200" href="">Terms and Conditions</a> & <a className="text-primary dark:text-slate-200" href="">Privacy Policy</a> </div>
@@ -83,6 +91,7 @@ const Signin = () => {
             {/* <!-- END: Login Form --> */}
         </div>
     </div>
+    <ToastContainer />
     </div>
     )
 }

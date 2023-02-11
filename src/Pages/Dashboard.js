@@ -1,11 +1,66 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Account from "../layout/Account_menu";
 import DesktopMenuBar from "../layout/DesktopMenu";
 import MobileMenuBar from "../layout/MobileMenu";
 import Notifications from "../layout/Notification";
 import Search from "../layout/SearchBar";
+import Api from "../Api";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../redux/GeneralSlice";
 
 const Dashboard = () => {
+    const [isAllData, setIsAllData ] = useState({
+        first_name: '',
+        last_name: '',
+        phone_number: '',
+        email: '',
+        id: ''
+    })
+    const [first_name, setFirst_name] = useState('')
+    const [last_name, setLast_name] = useState('')
+    const [phone_number, setPhone_Number] = useState('')
+    const [email, setEmail] = useState('')
+    const [id, setId] = useState('')
+    const [isSuccess, setIsSuccess] = useState()
+
+    // Redux Section
+    const userDetails = useSelector((state) => state.general)
+    
+    const dispatch = useDispatch()
+  
+    const getDetails = () =>{
+        // dispatch(setUser())
+        // console.log(userDetails);
+        let updatedValue = {};
+        Api.axios_instance.get(Api.baseUrl+'api/v1/user_data')
+        .then(response => {
+            dispatch(setUser(response.data))
+            if(response.data){
+                setIsSuccess(true)
+            }
+            window.sessionStorage.setItem('first_name', response.data.first_name)
+            sessionStorage.setItem('last_name', response.data.last_name)
+            window.sessionStorage.setItem('phone_number', response.data.phone_number)
+            window.sessionStorage.setItem('abbddress', response.data.address)
+            window.sessionStorage.setItem('email', response.data.email)
+            window.sessionStorage.setItem('id', response.data.id)
+        })
+    }
+    useEffect(() => {
+            getDetails()
+    }, [])
+         
+    useEffect(() => {
+        if (isSuccess == true){
+            let updatedValue = {first_name:sessionStorage.getItem('first_name'), last_name:sessionStorage.getItem('last_name'), phone_number:sessionStorage.getItem('phone_number'), email:sessionStorage.getItem('email'), id:sessionStorage.getItem('email')}
+            setIsAllData( isAllData => ({
+                ...isAllData, 
+                updatedValue
+            }))
+            console.log(isAllData);
+        }
+    }, [isSuccess])
+
     return(
         <div>
        <MobileMenuBar />
@@ -36,7 +91,7 @@ const Dashboard = () => {
                             <div className="col-span-12 mt-8">
                                 <div className="intro-y flex items-center h-10">
                                     <h2 className="text-lg font-medium truncate mr-5">
-                                        Welcome Back Samson
+                                        Welcome Back 
                                     </h2>
                                     <a href="" className="ml-auto flex items-center text-primary"> <i data-lucide="refresh-ccw" className="w-4 h-4 mr-3"></i> Reload Data </a>
                                 </div>
